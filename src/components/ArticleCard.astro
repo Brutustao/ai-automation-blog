@@ -15,6 +15,14 @@ const categoryTitle = data.category.replace(/-/g, " ");
   class="block rounded-lg border border-gray-200 p-5 transition hover:border-gray-400 hover:shadow-sm"
 >
   <article>
+    {data.image && (
+      <img
+        src={data.image}
+        alt={data.title}
+        class="mb-4 h-40 w-full rounded-md object-cover"
+        loading="lazy"
+      />
+    )}
     <p class="mb-1 text-xs uppercase tracking-widest text-gray-500">
       {categoryTitle}
     </p>
