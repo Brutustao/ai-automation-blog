@@ -1,0 +1,32 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ArticleCard from "../components/ArticleCard.astro";
+import CategoryNav from "../components/CategoryNav.astro";
+import { getCollection } from "astro:content";
+
+const articles = await getCollection("articles");
+articles.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<BaseLayout>
+  <section class="mb-10">
+    <h1 class="mb-4 text-4xl font-bold tracking-tight">
+      AI Automation for Marketers
+    </h1>
+    <p class="max-w-2xl text-lg leading-relaxed text-gray-600">
+      Tutorials, tool comparisons, and no-code automation workflows to help
+      digital marketers work smarter with AI.
+    </p>
+  </section>
+
+  <CategoryNav />
+
+  <section class="grid gap-6 sm:grid-cols-2">
+    {articles.length === 0 && (
+      <p class="col-span-full text-center text-gray-400">
+        No articles yet. Check back soon.
+      </p>
+    )}
+    {articles.map((article) => <ArticleCard article={article} />)}
+  </section>
+</BaseLayout>
