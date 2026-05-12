@@ -4,14 +4,23 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
 <BaseLayout title="Page Not Found">
   <section class="flex flex-col items-center justify-center py-24 text-center">
-    <h1 class="mb-4 text-6xl font-bold text-gray-300 dark:text-gray-600">404</h1>
-    <p class="mb-6 text-lg text-gray-600 dark:text-gray-400">
-      Page not found — it may have moved or doesn't exist.
+    <div class="mb-6 flex h-24 w-24 items-center justify-center rounded-2xl bg-accent-50 text-5xl dark:bg-accent-950">
+      🔍
+    </div>
+    <h1 class="mb-2 text-7xl font-bold gradient-text">404</h1>
+    <p class="mb-2 text-xl font-semibold text-gray-700 dark:text-gray-300">
+      Page not found
+    </p>
+    <p class="mb-8 max-w-sm text-gray-500 dark:text-gray-400">
+      This page may have moved or doesn't exist. Let's get you back on track.
     </p>
     <a
       href="/"
-      class="rounded-lg bg-gray-900 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-gray-700"
+      class="inline-flex items-center gap-2 rounded-xl bg-accent-500 px-6 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-accent-600 hover:shadow-md"
     >
+      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+      </svg>
       Back to Home
     </a>
   </section>

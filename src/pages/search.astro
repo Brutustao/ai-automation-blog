@@ -1,17 +1,24 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { CATEGORIES } from "../config";
 ---
 
 <BaseLayout title="Search">
   <section class="mx-auto max-w-2xl">
-    <h1 class="mb-6 text-3xl font-bold tracking-tight">Search Articles</h1>
+    <h1 class="mb-6 text-3xl font-bold tracking-tight gradient-text">Search Articles</h1>
 
     <div class="relative mb-8">
+      <svg
+        class="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"
+        fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
       <input
         id="search-input"
         type="search"
         placeholder="Search articles..."
-        class="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm focus:border-gray-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+        class="w-full rounded-xl border border-gray-300 py-3.5 pl-10 pr-4 text-sm transition focus:border-accent-400 focus:outline-none focus:ring-2 focus:ring-accent-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:focus:border-accent-500 dark:focus:ring-accent-900"
         autofocus
       />
     </div>
@@ -25,6 +32,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     const input = document.getElementById("search-input");
     const results = document.getElementById("results");
 
+    const CATEGORIES = {
+      "social-media-automation": { icon: "📱", color: "#ec4899" },
+      "email-marketing-ai": { icon: "✉️", color: "#0ea5e9" },
+      "ppc-ads": { icon: "📊", color: "#f59e0b" },
+      "content-creation": { icon: "✍️", color: "#10b981" },
+      "analytics-reporting": { icon: "📈", color: "#8b5cf6" },
+    };
+
     let index = [];
 
     fetch("/search.json")
@@ -37,7 +52,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     function highlight(text, query) {
       const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi");
-      return text.replace(regex, "<mark class=\"bg-yellow-200 dark:bg-yellow-800\">$1</mark>");
+      return text.replace(regex, "<mark class=\"bg-accent-100 text-accent-800 dark:bg-accent-900 dark:text-accent-200 rounded px-0.5\">$1</mark>");
+    }
+
+    function getCatMeta(slug) {
+      return CATEGORIES[slug] || { icon: "", color: "#6366f1" };
     }
 
     input.addEventListener("input", () => {
@@ -60,22 +79,25 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
       results.innerHTML = hits
         .map(
-          (a) => `
-          <a href="/articles/${a.slug}" class="block rounded-lg border border-gray-200 p-4 transition hover:border-gray-400 dark:border-gray-800 dark:hover:border-gray-600">
-            <p class="text-xs uppercase tracking-widest text-gray-500 dark:text-gray-400">
-              ${a.category.replace(/-/g, " ")}
-            </p>
-            <h2 class="mt-1 text-lg font-semibold dark:text-gray-100">
-              ${highlight(a.title, input.value)}
-            </h2>
-            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-              ${highlight(a.description, input.value)}
-            </p>
-            <p class="mt-1 text-xs text-gray-400 dark:text-gray-500">
-              ${new Date(a.date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
-            </p>
-          </a>
-        `
+          (a) => {
+            const cat = getCatMeta(a.category);
+            return `
+            <a href="/articles/${a.slug}" class="group relative block overflow-hidden rounded-xl border border-gray-200 p-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-gray-800 dark:hover:border-gray-600" style="border-left: 3px solid ${cat.color}">
+              <span class="inline-flex items-center gap-1 text-xs font-medium" style="color: ${cat.color}">
+                ${cat.icon} ${a.category.replace(/-/g, " ")}
+              </span>
+              <h2 class="mt-1 text-lg font-semibold transition-colors group-hover:text-accent-600 dark:group-hover:text-accent-400">
+                ${highlight(a.title, input.value)}
+              </h2>
+              <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                ${highlight(a.description, input.value)}
+              </p>
+              <p class="mt-1.5 text-xs text-gray-400 dark:text-gray-500">
+                ${new Date(a.date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+              </p>
+            </a>
+          `;
+          }
         )
         .join("");
     });

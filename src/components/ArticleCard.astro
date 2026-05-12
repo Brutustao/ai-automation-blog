@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import { formatCategory, formatDate } from "../utils";
+import { CATEGORIES } from "../config";
 
 export interface Props {
   article: CollectionEntry<"articles">;
@@ -8,33 +9,45 @@ export interface Props {
 
 const { article } = Astro.props;
 const { slug, data } = article;
+
+const cat = CATEGORIES.find((c) => c.slug === data.category);
+const catColor = cat?.color || "#6366f1";
+const catIcon = cat?.icon || "";
 ---
 
 <a
   href={`/articles/${slug}`}
-  class="block rounded-lg border border-gray-200 p-5 transition hover:border-gray-400 hover:shadow-sm dark:border-gray-800 dark:hover:border-gray-600"
+  class="group relative block overflow-hidden rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-gray-600"
+  style={{ borderLeftColor: catColor, borderLeftWidth: "3px" }}
 >
   <article>
     {data.image && (
       <img
         src={data.image}
         alt={data.title}
-        class="mb-4 h-40 w-full rounded-md object-cover"
+        class="mb-4 h-40 w-full rounded-lg object-cover transition duration-300 group-hover:scale-[1.02]"
         loading="lazy"
       />
     )}
-    <p class="mb-1 text-xs uppercase tracking-widest text-gray-500 dark:text-gray-400">
-      {formatCategory(data.category)}
-    </p>
-    <h2 class="mb-2 text-xl font-semibold">{data.title}</h2>
+    <div class="mb-2 flex items-center gap-2">
+      <span
+        class="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium"
+        style={{ backgroundColor: catColor + "18", color: catColor }}
+      >
+        {catIcon && <span>{catIcon}</span>}
+        {formatCategory(data.category)}
+      </span>
+    </div>
+    <h2 class="mb-2 text-xl font-semibold transition-colors group-hover:text-accent-600 dark:group-hover:text-accent-400">
+      {data.title}
+    </h2>
     <p class="mb-3 text-sm leading-relaxed text-gray-600 dark:text-gray-400">
       {data.description}
     </p>
-    <time
-      datetime={data.date.toISOString()}
-      class="text-xs text-gray-400 dark:text-gray-500"
-    >
-      {formatDate(data.date)}
-    </time>
+    <div class="flex items-center gap-3 text-xs text-gray-400 dark:text-gray-500">
+      <time datetime={data.date.toISOString()}>
+        {formatDate(data.date)}
+      </time>
+    </div>
   </article>
 </a>

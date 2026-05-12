@@ -1,26 +1,50 @@
 ---
 import { CATEGORIES } from "../config";
+
+export interface Props {
+  activeCategory?: string;
+}
+
+const { activeCategory } = Astro.props;
 ---
 
-<nav class="mb-8" aria-label="Categories">
+<nav class="mb-10" aria-label="Categories">
   <ul class="flex flex-wrap gap-2">
     <li>
       <a
         href="/"
-        class="inline-block rounded-full border border-gray-300 px-4 py-1.5 text-sm font-medium text-gray-700 transition hover:border-gray-900 hover:text-gray-900 dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-100 dark:hover:text-gray-100"
+        class="inline-block rounded-full border px-4 py-1.5 text-sm font-medium transition-all duration-200"
+        class:list={[
+          activeCategory === undefined
+            ? "border-accent-500 bg-accent-50 text-accent-700 dark:bg-accent-950 dark:text-accent-300 dark:border-accent-600"
+            : "border-gray-300 text-gray-700 hover:border-gray-900 hover:text-gray-900 dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-100 dark:hover:text-gray-100",
+        ]}
       >
         All
       </a>
     </li>
-    {CATEGORIES.map((cat) => (
-      <li key={cat.slug}>
-        <a
-          href={`/${cat.slug}`}
-          class="inline-block rounded-full border border-gray-300 px-4 py-1.5 text-sm font-medium text-gray-700 transition hover:border-gray-900 hover:text-gray-900 dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-100 dark:hover:text-gray-100"
-        >
-          {cat.title}
-        </a>
-      </li>
-    ))}
+    {CATEGORIES.map((cat) => {
+      const isActive = activeCategory === cat.slug;
+      return (
+        <li key={cat.slug}>
+          <a
+            href={`/${cat.slug}`}
+            class="inline-flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-sm font-medium transition-all duration-200"
+            style={{
+              borderColor: isActive ? cat.color : undefined,
+              backgroundColor: isActive ? cat.lightBg : undefined,
+              color: isActive ? cat.color : undefined,
+            }}
+            class:list={[
+              !isActive &&
+                "border-gray-300 text-gray-700 hover:border-gray-900 hover:text-gray-900 dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-100 dark:hover:text-gray-100",
+            ]}
+          >
+            <span>{cat.icon}</span>
+            {cat.title}
+          </a>
+        </li>
+      );
+    })}
   </ul>
 </nav>

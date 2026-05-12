@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 import { formatCategory, formatDate, estimateReadingTime, extractHeadings } from "../../utils";
+import { CATEGORIES } from "../../config";
 import Breadcrumb from "../../components/Breadcrumb.astro";
 import TableOfContents from "../../components/TableOfContents.astro";
 import ShareButtons from "../../components/ShareButtons.astro";
@@ -17,8 +18,9 @@ export async function getStaticPaths() {
 const { article } = Astro.props;
 const { Content } = await article.render();
 
-	const readingTime = estimateReadingTime(article.body);
-	const tocHeadings = extractHeadings(article.body || "");
+const readingTime = estimateReadingTime(article.body);
+const tocHeadings = extractHeadings(article.body || "");
+const cat = CATEGORIES.find((c) => c.slug === article.data.category);
 
 const allArticles = await getCollection("articles");
 const related = allArticles
@@ -28,63 +30,92 @@ const related = allArticles
 ---
 
 <BaseLayout title={article.data.title} description={article.data.description}>
-  <article class="prose prose-gray mx-auto max-w-2xl dark:prose-invert">
-    <header class="mb-8 not-prose">
-      <Breadcrumb category={article.data.category} title={article.data.title} />
-      <p class="text-xs uppercase tracking-widest text-gray-500">
-        {formatCategory(article.data.category)}
-      </p>
-      <h1 class="mt-1 text-3xl font-bold tracking-tight">
-        {article.data.title}
-      </h1>
-      <div class="mt-2 flex items-center gap-3 text-sm text-gray-400">
-        <time datetime={article.data.date.toISOString()}>
-          {formatDate(article.data.date)}
-        </time>
-        <span class="text-gray-300">·</span>
-        <span>{readingTime} min read</span>
-      </div>
-      {article.data.image && (
-        <img
-          src={article.data.image}
-          alt={article.data.title}
-          class="mt-6 rounded-lg"
-          loading="eager"
-        />
-      )}
-      {article.data.affiliate && (
-        <p class="mt-4 rounded-md border border-yellow-200 bg-yellow-50 px-4 py-2 text-xs text-yellow-800">
-          This post contains affiliate links. We may earn a commission at no
-          extra cost to you.
-        </p>
-      )}
-    </header>
-    <Content />
-    <ShareButtons title={article.data.title} />
-  </article>
+  <div class="relative mx-auto grid max-w-5xl grid-cols-1 gap-8 lg:grid-cols-[1fr_220px]">
+    <!-- Main content -->
+    <article class="prose prose-gray min-w-0 dark:prose-invert">
+      <header class="mb-8 not-prose">
+        <Breadcrumb category={article.data.category} title={article.data.title} />
+        <div class="mb-3 flex items-center gap-2">
+          <span
+            class="inline-flex items-center gap-1 rounded-full px-3 py-0.5 text-xs font-medium"
+            style={{ backgroundColor: cat?.lightBg || "#eef2ff", color: cat?.color || "#6366f1" }}
+          >
+            {cat?.icon} {formatCategory(article.data.category)}
+          </span>
+        </div>
+        <h1 class="mt-1 text-4xl font-bold tracking-tight">
+          {article.data.title}
+        </h1>
+        <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500 dark:text-gray-400">
+          <time datetime={article.data.date.toISOString()} class="flex items-center gap-1">
+            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            {formatDate(article.data.date)}
+          </time>
+          <span class="flex items-center gap-1">
+            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            {readingTime} min read
+          </span>
+        </div>
+        {article.data.image && (
+          <img
+            src={article.data.image}
+            alt={article.data.title}
+            class="mt-6 rounded-xl shadow-sm"
+            loading="eager"
+          />
+        )}
+        {article.data.affiliate && (
+          <p class="mt-4 rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-2.5 text-xs text-yellow-800 dark:border-yellow-900 dark:bg-yellow-950 dark:text-yellow-200">
+            <strong>Disclosure:</strong> This post contains affiliate links. We may earn a commission at no extra cost to you.
+          </p>
+        )}
+      </header>
 
-  <TableOfContents headings={tocHeadings} />
+      <Content />
 
+      <ShareButtons title={article.data.title} />
+    </article>
+
+    <!-- Sidebar: TOC (desktop) -->
+    <aside class="hidden lg:block">
+      <TableOfContents headings={tocHeadings} />
+    </aside>
+  </div>
+
+  <!-- TOC (mobile) -->
+  <div class="mt-8 lg:hidden">
+    <TableOfContents headings={tocHeadings} />
+  </div>
+
+  <!-- Related Articles -->
   {related.length > 0 && (
-    <section class="mx-auto mt-16 max-w-2xl border-t border-gray-200 pt-10 dark:border-gray-800">
+    <section class="mx-auto mt-16 max-w-5xl border-t border-gray-200 pt-10 dark:border-gray-800">
       <h2 class="mb-6 text-xl font-bold tracking-tight">Related Articles</h2>
       <div class="grid gap-4 sm:grid-cols-3">
-        {related.map((r) => (
-          <a
-            href={`/articles/${r.slug}`}
-            class="group rounded-lg border border-gray-200 p-4 transition hover:border-gray-400 dark:border-gray-800 dark:hover:border-gray-600"
-          >
-            <p class="text-xs uppercase tracking-widest text-gray-400">
-              {formatCategory(r.data.category)}
-            </p>
-            <h3 class="mt-1 text-sm font-semibold leading-snug group-hover:text-gray-600 dark:group-hover:text-gray-300">
-              {r.data.title}
-            </h3>
-            <p class="mt-1 text-xs text-gray-400">
-              {formatDate(r.data.date)}
-            </p>
-          </a>
-        ))}
+        {related.map((r) => {
+          const relCat = CATEGORIES.find((c) => c.slug === r.data.category);
+          return (
+            <a
+              href={`/articles/${r.slug}`}
+              class="group relative overflow-hidden rounded-xl border border-gray-200 p-4 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md dark:border-gray-800 dark:hover:border-gray-600"
+              style={{ borderTopColor: relCat?.color, borderTopWidth: "3px" }}
+            >
+              <span class="text-xs font-medium" style={{ color: relCat?.color }}>
+                {relCat?.icon} {formatCategory(r.data.category)}
+              </span>
+              <h3 class="mt-1 text-sm font-semibold leading-snug transition-colors group-hover:text-accent-600 dark:group-hover:text-accent-400">
+                {r.data.title}
+              </h3>
+              <p class="mt-1.5 text-xs text-gray-400 dark:text-gray-500">
+                {formatDate(r.data.date)}
+              </p>
+            </a>
+          );
+        })}
       </div>
     </section>
   )}
