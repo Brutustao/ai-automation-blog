@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import { formatCategory, formatDate } from "../utils";
 
 export interface Props {
   article: CollectionEntry<"articles">;
@@ -7,12 +8,11 @@ export interface Props {
 
 const { article } = Astro.props;
 const { slug, data } = article;
-const categoryTitle = data.category.replace(/-/g, " ");
 ---
 
 <a
   href={`/articles/${slug}`}
-  class="block rounded-lg border border-gray-200 p-5 transition hover:border-gray-400 hover:shadow-sm"
+  class="block rounded-lg border border-gray-200 p-5 transition hover:border-gray-400 hover:shadow-sm dark:border-gray-800 dark:hover:border-gray-600"
 >
   <article>
     {data.image && (
@@ -23,22 +23,18 @@ const categoryTitle = data.category.replace(/-/g, " ");
         loading="lazy"
       />
     )}
-    <p class="mb-1 text-xs uppercase tracking-widest text-gray-500">
-      {categoryTitle}
+    <p class="mb-1 text-xs uppercase tracking-widest text-gray-500 dark:text-gray-400">
+      {formatCategory(data.category)}
     </p>
     <h2 class="mb-2 text-xl font-semibold">{data.title}</h2>
-    <p class="mb-3 text-sm leading-relaxed text-gray-600">
+    <p class="mb-3 text-sm leading-relaxed text-gray-600 dark:text-gray-400">
       {data.description}
     </p>
     <time
       datetime={data.date.toISOString()}
-      class="text-xs text-gray-400"
+      class="text-xs text-gray-400 dark:text-gray-500"
     >
-      {data.date.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })}
+      {formatDate(data.date)}
     </time>
   </article>
 </a>

@@ -1,6 +1,10 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
+import { formatCategory, formatDate, estimateReadingTime, extractHeadings } from "../../utils";
+import Breadcrumb from "../../components/Breadcrumb.astro";
+import TableOfContents from "../../components/TableOfContents.astro";
+import ShareButtons from "../../components/ShareButtons.astro";
 
 export async function getStaticPaths() {
   const articles = await getCollection("articles");
@@ -13,8 +17,8 @@ export async function getStaticPaths() {
 const { article } = Astro.props;
 const { Content } = await article.render();
 
-const wordCount = article.body ? article.body.split(/\s+/).length : 0;
-const readingTime = Math.max(1, Math.ceil(wordCount / 200));
+	const readingTime = estimateReadingTime(article.body);
+	const tocHeadings = extractHeadings(article.body || "");
 
 const allArticles = await getCollection("articles");
 const related = allArticles
@@ -24,21 +28,18 @@ const related = allArticles
 ---
 
 <BaseLayout title={article.data.title} description={article.data.description}>
-  <article class="prose prose-gray mx-auto max-w-2xl">
+  <article class="prose prose-gray mx-auto max-w-2xl dark:prose-invert">
     <header class="mb-8 not-prose">
+      <Breadcrumb category={article.data.category} title={article.data.title} />
       <p class="text-xs uppercase tracking-widest text-gray-500">
-        {article.data.category.replace(/-/g, " ")}
+        {formatCategory(article.data.category)}
       </p>
       <h1 class="mt-1 text-3xl font-bold tracking-tight">
         {article.data.title}
       </h1>
       <div class="mt-2 flex items-center gap-3 text-sm text-gray-400">
         <time datetime={article.data.date.toISOString()}>
-          {article.data.date.toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
+          {formatDate(article.data.date)}
         </time>
         <span class="text-gray-300">·</span>
         <span>{readingTime} min read</span>
@@ -59,29 +60,28 @@ const related = allArticles
       )}
     </header>
     <Content />
+    <ShareButtons title={article.data.title} />
   </article>
 
+  <TableOfContents headings={tocHeadings} />
+
   {related.length > 0 && (
-    <section class="mx-auto mt-16 max-w-2xl border-t border-gray-200 pt-10">
+    <section class="mx-auto mt-16 max-w-2xl border-t border-gray-200 pt-10 dark:border-gray-800">
       <h2 class="mb-6 text-xl font-bold tracking-tight">Related Articles</h2>
       <div class="grid gap-4 sm:grid-cols-3">
         {related.map((r) => (
           <a
             href={`/articles/${r.slug}`}
-            class="group rounded-lg border border-gray-200 p-4 transition hover:border-gray-400"
+            class="group rounded-lg border border-gray-200 p-4 transition hover:border-gray-400 dark:border-gray-800 dark:hover:border-gray-600"
           >
             <p class="text-xs uppercase tracking-widest text-gray-400">
-              {r.data.category.replace(/-/g, " ")}
+              {formatCategory(r.data.category)}
             </p>
-            <h3 class="mt-1 text-sm font-semibold leading-snug group-hover:text-gray-600">
+            <h3 class="mt-1 text-sm font-semibold leading-snug group-hover:text-gray-600 dark:group-hover:text-gray-300">
               {r.data.title}
             </h3>
             <p class="mt-1 text-xs text-gray-400">
-              {r.data.date.toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-              })}
+              {formatDate(r.data.date)}
             </p>
           </a>
         ))}

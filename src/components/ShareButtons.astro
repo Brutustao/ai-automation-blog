@@ -1,0 +1,39 @@
+---
+import { SITE } from "../config";
+
+export interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+const url = encodeURIComponent(SITE.url + Astro.url.pathname);
+const encodedTitle = encodeURIComponent(title);
+---
+
+<div class="not-prose mt-8 flex items-center gap-3 border-t border-gray-200 pt-6 dark:border-gray-800">
+  <span class="text-sm text-gray-500">Share this:</span>
+  <a
+    href={`https://twitter.com/intent/tweet?text=${encodedTitle}&url=${url}`}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="rounded-md bg-gray-100 px-3 py-1.5 text-sm text-gray-600 transition hover:bg-gray-200 hover:text-gray-900 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-100"
+  >
+    Twitter
+  </a>
+  <a
+    href={`https://www.linkedin.com/sharing/share-offsite/?url=${url}`}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="rounded-md bg-gray-100 px-3 py-1.5 text-sm text-gray-600 transition hover:bg-gray-200 hover:text-gray-900 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-100"
+  >
+    LinkedIn
+  </a>
+  <a
+    href={`https://www.facebook.com/sharer/sharer.php?u=${url}`}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="rounded-md bg-gray-100 px-3 py-1.5 text-sm text-gray-600 transition hover:bg-gray-200 hover:text-gray-900 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-100"
+  >
+    Facebook
+  </a>
+</div>

@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import ArticleCard from "../components/ArticleCard.astro";
 import CategoryNav from "../components/CategoryNav.astro";
 import Pagination from "../components/Pagination.astro";
+import Breadcrumb from "../components/Breadcrumb.astro";
 import { getCollection } from "astro:content";
 import { CATEGORIES } from "../config";
 
@@ -26,8 +27,9 @@ const articles = allArticles.slice(0, PAGE_SIZE);
 
 <BaseLayout title={category.title} description={category.description}>
   <section class="mb-8">
+    <Breadcrumb category={category.slug} />
     <h1 class="mb-2 text-3xl font-bold tracking-tight">{category.title}</h1>
-    <p class="max-w-2xl text-gray-600">{category.description}</p>
+    <p class="max-w-2xl text-gray-600 dark:text-gray-400">{category.description}</p>
   </section>
 
   <CategoryNav />

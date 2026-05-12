@@ -1,0 +1,6 @@
+---
+import { SITE } from "../config";
+const url = SITE.url + Astro.url.pathname;
+---
+
+<link rel="canonical" href={url} />

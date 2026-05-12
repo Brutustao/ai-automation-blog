@@ -1,0 +1,32 @@
+---
+import { formatCategory } from "../utils";
+
+export interface Props {
+  category: string;
+  title?: string;
+}
+
+const { category, title } = Astro.props;
+---
+
+<nav class="mb-6 text-sm text-gray-400 not-prose dark:text-gray-500" aria-label="Breadcrumb">
+  <ol class="flex items-center gap-1.5">
+    <li>
+      <a href="/" class="hover:text-gray-600 transition-colors dark:hover:text-gray-300">Home</a>
+    </li>
+    <li class="select-none">/</li>
+    <li>
+      <a href={`/${category}`} class="hover:text-gray-600 transition-colors dark:hover:text-gray-300">
+        {formatCategory(category)}
+      </a>
+    </li>
+    {title && (
+      <>
+        <li class="select-none">/</li>
+        <li class="truncate text-gray-500 max-w-[200px] sm:max-w-sm dark:text-gray-400" title={title}>
+          {title}
+        </li>
+      </>
+    )}
+  </ol>
+</nav>
