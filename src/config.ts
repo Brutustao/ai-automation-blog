@@ -2,7 +2,7 @@ export const SITE = {
   title: "AI Automation Hub",
   description:
     "Discover the best AI tools and no-code automation workflows for digital marketers",
-  url: "https://yourdomain.com",
+  url: "https://ai-automation-blog.pages.dev",
 };
 
 export const CATEGORIES = [

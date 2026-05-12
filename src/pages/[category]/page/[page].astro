@@ -1,0 +1,46 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import ArticleCard from "../../../components/ArticleCard.astro";
+import CategoryNav from "../../../components/CategoryNav.astro";
+import Pagination from "../../../components/Pagination.astro";
+import { getCollection } from "astro:content";
+import { CATEGORIES } from "../../../config";
+
+export async function getStaticPaths() {
+  const PAGE_SIZE = 6;
+  const paths = [];
+  for (const cat of CATEGORIES) {
+    const articles = await getCollection("articles", (a) => a.data.category === cat.slug);
+    const totalPages = Math.ceil(articles.length / PAGE_SIZE);
+    if (totalPages <= 1) continue;
+    for (let i = 1; i < totalPages; i++) {
+      paths.push({
+        params: { category: cat.slug, page: String(i + 2) },
+        props: { category: cat, page: i + 2, totalPages },
+      });
+    }
+  }
+  return paths;
+}
+
+const PAGE_SIZE = 6;
+const { category, page, totalPages } = Astro.props;
+const allArticles = await getCollection("articles", (a) => a.data.category === category.slug);
+allArticles.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const articles = allArticles.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+---
+
+<BaseLayout title={category.title} description={category.description}>
+  <section class="mb-8">
+    <h1 class="mb-2 text-3xl font-bold tracking-tight">{category.title}</h1>
+    <p class="max-w-2xl text-gray-600">{category.description}</p>
+  </section>
+
+  <CategoryNav />
+
+  <section class="grid gap-6 sm:grid-cols-2">
+    {articles.map((article) => <ArticleCard article={article} key={article.slug} />)}
+  </section>
+
+  <Pagination base={`/${category.slug}/`} {page} {totalPages} />
+</BaseLayout>

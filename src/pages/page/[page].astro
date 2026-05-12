@@ -1,0 +1,43 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ArticleCard from "../../components/ArticleCard.astro";
+import CategoryNav from "../../components/CategoryNav.astro";
+import Pagination from "../../components/Pagination.astro";
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const PAGE_SIZE = 6;
+  const articles = await getCollection("articles");
+  const totalPages = Math.ceil(articles.length / PAGE_SIZE);
+  return Array.from({ length: totalPages - 1 }, (_, i) => ({
+    params: { page: String(i + 2) },
+    props: { page: i + 2, totalPages },
+  }));
+}
+
+const PAGE_SIZE = 6;
+const { page, totalPages } = Astro.props;
+const allArticles = await getCollection("articles");
+allArticles.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const articles = allArticles.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+---
+
+<BaseLayout>
+  <section class="mb-10">
+    <h1 class="mb-4 text-4xl font-bold tracking-tight">
+      AI Automation for Marketers
+    </h1>
+    <p class="max-w-2xl text-lg leading-relaxed text-gray-600">
+      Tutorials, tool comparisons, and no-code automation workflows to help
+      digital marketers work smarter with AI.
+    </p>
+  </section>
+
+  <CategoryNav />
+
+  <section class="grid gap-6 sm:grid-cols-2">
+    {articles.map((article) => <ArticleCard article={article} key={article.slug} />)}
+  </section>
+
+  <Pagination base="/" {page} {totalPages} />
+</BaseLayout>

@@ -1,0 +1,33 @@
+---
+export interface Props {
+  base: string;
+  page: number;
+  totalPages: number;
+}
+
+const { base, page, totalPages } = Astro.props;
+---
+
+<nav class="mt-10 flex items-center justify-center gap-4" aria-label="Pagination">
+  {page > 1 && (
+    <a
+      href={page === 2 ? base : `${base}page/${page - 1}/`}
+      class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition hover:border-gray-900 hover:text-gray-900"
+    >
+      ← Previous
+    </a>
+  )}
+
+  <span class="text-sm text-gray-500">
+    Page {page} of {totalPages}
+  </span>
+
+  {page < totalPages && (
+    <a
+      href={`${base}page/${page + 1}/`}
+      class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition hover:border-gray-900 hover:text-gray-900"
+    >
+      Next →
+    </a>
+  )}
+</nav>

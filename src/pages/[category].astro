@@ -2,8 +2,11 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ArticleCard from "../components/ArticleCard.astro";
 import CategoryNav from "../components/CategoryNav.astro";
+import Pagination from "../components/Pagination.astro";
 import { getCollection } from "astro:content";
 import { CATEGORIES } from "../config";
+
+const PAGE_SIZE = 6;
 
 export async function getStaticPaths() {
   return CATEGORIES.map((cat) => ({
@@ -13,10 +16,12 @@ export async function getStaticPaths() {
 }
 
 const { category } = Astro.props;
-const articles = await getCollection("articles", (article) =>
+const allArticles = await getCollection("articles", (article) =>
   article.data.category === category.slug
 );
-articles.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+allArticles.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const totalPages = Math.ceil(allArticles.length / PAGE_SIZE);
+const articles = allArticles.slice(0, PAGE_SIZE);
 ---
 
 <BaseLayout title={category.title} description={category.description}>
@@ -33,6 +38,8 @@ articles.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
         No articles in this category yet. Check back soon.
       </p>
     )}
-    {articles.map((article) => <ArticleCard article={article} />)}
+    {articles.map((article) => <ArticleCard article={article} key={article.slug} />)}
   </section>
+
+  {totalPages > 1 && <Pagination base={`/${category.slug}/`} page={1} {totalPages} />}
 </BaseLayout>

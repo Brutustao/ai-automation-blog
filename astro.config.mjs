@@ -1,8 +1,9 @@
 import { defineConfig } from "astro/config";
 import mdx from "@astrojs/mdx";
 import tailwind from "@astrojs/tailwind";
+import sitemap from "@astrojs/sitemap";
 
 export default defineConfig({
-  site: "https://yourdomain.com",
-  integrations: [mdx(), tailwind()],
+  site: "https://ai-automation-blog.pages.dev",
+  integrations: [mdx(), tailwind(), sitemap()],
 });

@@ -2,10 +2,15 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ArticleCard from "../components/ArticleCard.astro";
 import CategoryNav from "../components/CategoryNav.astro";
+import Pagination from "../components/Pagination.astro";
 import { getCollection } from "astro:content";
 
-const articles = await getCollection("articles");
-articles.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const PAGE_SIZE = 6;
+
+const allArticles = await getCollection("articles");
+allArticles.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const totalPages = Math.ceil(allArticles.length / PAGE_SIZE);
+const articles = allArticles.slice(0, PAGE_SIZE);
 ---
 
 <BaseLayout>
@@ -27,6 +32,8 @@ articles.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
         No articles yet. Check back soon.
       </p>
     )}
-    {articles.map((article) => <ArticleCard article={article} />)}
+    {articles.map((article) => <ArticleCard article={article} key={article.slug} />)}
   </section>
+
+  {totalPages > 1 && <Pagination base="/" page={1} {totalPages} />}
 </BaseLayout>
