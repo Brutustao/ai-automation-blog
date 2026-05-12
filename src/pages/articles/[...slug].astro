@@ -1,0 +1,45 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const articles = await getCollection("articles");
+  return articles.map((article) => ({
+    params: { slug: article.slug },
+    props: { article },
+  }));
+}
+
+const { article } = Astro.props;
+const { Content } = await article.render();
+---
+
+<BaseLayout title={article.data.title} description={article.data.description}>
+  <article class="prose prose-gray mx-auto max-w-2xl">
+    <header class="mb-8 not-prose">
+      <p class="text-xs uppercase tracking-widest text-gray-500">
+        {article.data.category.replace(/-/g, " ")}
+      </p>
+      <h1 class="mt-1 text-3xl font-bold tracking-tight">
+        {article.data.title}
+      </h1>
+      <time
+        datetime={article.data.date.toISOString()}
+        class="text-sm text-gray-400"
+      >
+        {article.data.date.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })}
+      </time>
+      {article.data.affiliate && (
+        <p class="mt-4 text-xs text-gray-400">
+          This post contains affiliate links. We may earn a commission at no
+          extra cost to you.
+        </p>
+      )}
+    </header>
+    <Content />
+  </article>
+</BaseLayout>
