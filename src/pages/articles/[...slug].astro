@@ -2,7 +2,8 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 import { formatCategory, formatDate, estimateReadingTime, extractHeadings } from "../../utils";
-import { CATEGORIES } from "../../config";
+import { CATEGORIES, SITE } from "../../config";
+import JsonLd from "../../components/JsonLd.astro";
 import Breadcrumb from "../../components/Breadcrumb.astro";
 import TableOfContents from "../../components/TableOfContents.astro";
 import ShareButtons from "../../components/ShareButtons.astro";
@@ -27,9 +28,34 @@ const related = allArticles
   .filter((a) => a.data.category === article.data.category && a.slug !== article.slug)
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
   .slice(0, 3);
+
+const articleUrl = SITE.url + Astro.url.pathname;
+
+const blogPostingSchema = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: article.data.title,
+  description: article.data.description,
+  datePublished: article.data.date.toISOString(),
+  dateModified: article.data.date.toISOString(),
+  author: {
+    "@type": "Organization",
+    name: SITE.title,
+  },
+  publisher: {
+    "@type": "Organization",
+    name: SITE.title,
+  },
+  mainEntityOfPage: {
+    "@type": "WebPage",
+    "@id": articleUrl,
+  },
+  ...(article.data.image && { image: article.data.image }),
+};
 ---
 
-<BaseLayout title={article.data.title} description={article.data.description}>
+<BaseLayout title={article.data.title} description={article.data.description} image={article.data.image} date={article.data.date.toISOString()}>
+  <JsonLd data={blogPostingSchema} />
   <div class="relative mx-auto grid max-w-5xl grid-cols-1 gap-8 lg:grid-cols-[1fr_220px]">
     <!-- Main content -->
     <article class="prose prose-gray min-w-0 dark:prose-invert">

@@ -1,6 +1,7 @@
 ---
 import { formatCategory } from "../utils";
-import { CATEGORIES } from "../config";
+import { CATEGORIES, SITE } from "../config";
+import JsonLd from "./JsonLd.astro";
 
 export interface Props {
   category: string;
@@ -9,9 +10,36 @@ export interface Props {
 
 const { category, title } = Astro.props;
 const cat = CATEGORIES.find((c) => c.slug === category);
+
+const breadcrumbItems = [
+  { name: "Home", url: SITE.url + "/" },
+  {
+    name: cat ? cat.title : formatCategory(category),
+    url: SITE.url + "/" + category + "/",
+  },
+];
+
+if (title) {
+  breadcrumbItems.push({
+    name: title,
+    url: SITE.url + Astro.url.pathname,
+  });
+}
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: breadcrumbItems.map((item, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    name: item.name,
+    item: item.url,
+  })),
+};
 ---
 
 <nav class="mb-6 text-sm not-prose" aria-label="Breadcrumb">
+  <JsonLd data={breadcrumbSchema} />
   <ol class="flex flex-wrap items-center gap-1.5 text-gray-400 dark:text-gray-500">
     <li>
       <a href="/" class="transition hover:text-accent-600 dark:hover:text-accent-400">Home</a>
