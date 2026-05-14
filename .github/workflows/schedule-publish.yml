@@ -1,0 +1,38 @@
+name: Scheduled Publishing
+
+on:
+  schedule:
+    # Every Monday and Thursday at 9:00 UTC
+    - cron: "0 9 * * 1,4"
+  workflow_dispatch:
+
+jobs:
+  generate-and-deploy:
+    name: Generate & Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+
+      - name: Generate new article
+        id: generate
+        run: |
+          OUTPUT=$(node scripts/auto-publish.mjs 2>&1)
+          echo "$OUTPUT"
+          echo "result<<EOF" >> $GITHUB_OUTPUT
+          echo "$OUTPUT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+
+      - name: Commit and push
+        run: |
+          git config user.name "AI Blog Bot"
+          git config user.email "bot@ai-automation-blog.pages.dev"
+          git add src/content/articles/
+          git diff --staged --quiet || git commit -m "chore: auto-publish new article"
+          git push
