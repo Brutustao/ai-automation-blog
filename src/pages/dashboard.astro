@@ -1,0 +1,197 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const metrics = [
+  { label: "Revenue", value: "$48,290", change: "+12.5%", up: true },
+  { label: "ROAS", value: "4.2x", change: "+0.8x", up: true },
+  { label: "CPA", value: "$23.40", change: "-8.1%", up: true },
+  { label: "Conv. Rate", value: "3.8%", change: "+0.4%", up: true },
+];
+
+const channelData = [
+  { name: "Google Ads", spend: 4200, revenue: 18200, roas: "4.3x" },
+  { name: "Meta Ads", spend: 3800, revenue: 14500, roas: "3.8x" },
+  { name: "LinkedIn", spend: 2100, revenue: 6300, roas: "3.0x" },
+  { name: "Email", spend: 600, revenue: 8900, roas: "14.8x" },
+  { name: "Organic", spend: 0, revenue: 12400, roas: "—" },
+];
+
+const weeklyTrend = [32500, 34100, 33800, 36200, 35900, 38400, 41200];
+const trendLabels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const maxRevenue = Math.max(...weeklyTrend);
+---
+
+<BaseLayout title="Marketing Dashboard Demo" description="Live automated marketing dashboard visualization powered by AI">
+  <div class="mx-auto max-w-7xl px-4 py-8">
+    <div class="mb-8 flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight">Marketing Dashboard</h1>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          Automated real-time dashboard <span class="mx-2">·</span> Last updated: May 14, 2026 09:42 AM
+        </p>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="flex items-center gap-1.5 rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700 dark:bg-green-900/30 dark:text-green-400">
+          <span class="h-2 w-2 rounded-full bg-green-500"></span>
+          All data sources connected
+        </span>
+      </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {metrics.map((m) => (
+        <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-gray-800 dark:bg-gray-900">
+          <p class="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">{m.label}</p>
+          <p class="mt-1.5 text-2xl font-bold tracking-tight">{m.value}</p>
+          <p class="mt-1 text-xs" class:list={[m.up ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"]}>
+            {m.up ? "▲" : "▼"} {m.change} vs last week
+          </p>
+        </div>
+      ))}
+    </div>
+
+    <div class="mb-8 grid gap-6 lg:grid-cols-3">
+      <!-- Revenue Trend Chart -->
+      <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900 lg:col-span-2">
+        <div class="mb-4 flex items-center justify-between">
+          <h2 class="text-sm font-semibold">Weekly Revenue Trend</h2>
+          <span class="text-xs text-gray-400">This week</span>
+        </div>
+        <div class="flex items-end justify-between gap-2" style="height: 160px;">
+          {weeklyTrend.map((v, i) => (
+            <div class="flex flex-1 flex-col items-center gap-1">
+              <span class="text-[10px] font-medium text-gray-500">${(v / 1000).toFixed(0)}k</span>
+              <div
+                class="w-full rounded-t-md transition-all hover:opacity-80"
+                style={`
+                  height: ${(v / maxRevenue) * 140}px;
+                  background: linear-gradient(180deg, #6366f1 0%, #818cf8 100%);
+                `}
+              ></div>
+              <span class="text-[10px] text-gray-400">{trendLabels[i]}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- AI Insights Panel -->
+      <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+        <div class="mb-4 flex items-center gap-2">
+          <span class="flex h-6 w-6 items-center justify-center rounded-full bg-accent-100 text-xs dark:bg-accent-900/30">AI</span>
+          <h2 class="text-sm font-semibold">AI Insights</h2>
+        </div>
+        <div class="space-y-3">
+          <div class="rounded-lg border-l-2 border-green-500 bg-green-50/50 px-3 py-2 dark:bg-green-950/20">
+            <p class="text-xs font-medium text-green-700 dark:text-green-400">Anomaly detected</p>
+            <p class="mt-0.5 text-xs text-gray-600 dark:text-gray-400">Email channel ROAS spiked 40% — investigate the winning campaign.</p>
+          </div>
+          <div class="rounded-lg border-l-2 border-amber-500 bg-amber-50/50 px-3 py-2 dark:bg-amber-950/20">
+            <p class="text-xs font-medium text-amber-700 dark:text-amber-400">Budget alert</p>
+            <p class="mt-0.5 text-xs text-gray-600 dark:text-gray-400">Meta Ads CPA increased 15% in 3 days. Consider pausing underperforming ad sets.</p>
+          </div>
+          <div class="rounded-lg border-l-2 border-blue-500 bg-blue-50/50 px-3 py-2 dark:bg-blue-950/20">
+            <p class="text-xs font-medium text-blue-700 dark:text-blue-400">Recommendation</p>
+            <p class="mt-0.5 text-xs text-gray-600 dark:text-gray-400">Shift 20% of LinkedIn budget to Google Ads based on ROAS trend.</p>
+          </div>
+        </div>
+        <button class="mt-4 w-full rounded-lg bg-accent-50 py-2 text-xs font-medium text-accent-600 transition-colors hover:bg-accent-100 dark:bg-accent-900/20 dark:text-accent-400 dark:hover:bg-accent-900/30">
+          Generate full report →
+        </button>
+      </div>
+    </div>
+
+    <!-- Channel Breakdown -->
+    <div class="mb-8 grid gap-6 lg:grid-cols-2">
+      <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+        <h2 class="mb-4 text-sm font-semibold">Revenue by Channel</h2>
+        <div class="space-y-3">
+          {channelData.map((ch) => {
+            const pct = Math.round((ch.revenue / channelData.reduce((s, c) => s + c.revenue, 0)) * 100);
+            return (
+              <div>
+                <div class="mb-1 flex items-center justify-between text-xs">
+                  <span class="font-medium">{ch.name}</span>
+                  <span class="text-gray-500">${ch.revenue.toLocaleString()} ({pct}%)</span>
+                </div>
+                <div class="h-2 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
+                  <div class="h-full rounded-full bg-accent-500 transition-all" style={{ width: pct + "%" }}></div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+        <h2 class="mb-4 text-sm font-semibold">Channel Performance</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead>
+              <tr class="border-b border-gray-100 text-gray-500 dark:border-gray-800">
+                <th class="pb-2 font-medium">Channel</th>
+                <th class="pb-2 font-medium">Spend</th>
+                <th class="pb-2 font-medium">Revenue</th>
+                <th class="pb-2 font-medium">ROAS</th>
+                <th class="pb-2 font-medium">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {channelData.map((ch) => (
+                <tr class="border-b border-gray-50 dark:border-gray-800/50">
+                  <td class="py-2.5 font-medium">{ch.name}</td>
+                  <td class="py-2.5">${ch.spend.toLocaleString()}</td>
+                  <td class="py-2.5 font-medium">${ch.revenue.toLocaleString()}</td>
+                  <td class="py-2.5">{ch.roas}</td>
+                  <td class="py-2.5">
+                    <span
+                      class="inline-block rounded-full px-2 py-0.5 text-[10px] font-medium"
+                      class:list={[
+                        ch.roas !== "—" && parseFloat(ch.roas) >= 4
+                          ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                          : ch.roas !== "—" && parseFloat(ch.roas) >= 3
+                            ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
+                            : "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+                      ]}
+                    >
+                      {ch.roas !== "—"
+                        ? parseFloat(ch.roas) >= 4 ? "Healthy" : "Monitor"
+                        : "Organic"}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Architecture Pipeline -->
+    <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+      <h2 class="mb-4 text-sm font-semibold">Data Pipeline Architecture</h2>
+      <div class="flex flex-wrap items-center justify-center gap-2 text-xs">
+        <div class="rounded-lg bg-blue-50 px-3 py-2 font-medium text-blue-700 dark:bg-blue-950/30 dark:text-blue-400">GA4</div>
+        <span class="text-gray-400">→</span>
+        <div class="rounded-lg bg-blue-50 px-3 py-2 font-medium text-blue-700 dark:bg-blue-950/30 dark:text-blue-400">Google Ads</div>
+        <span class="text-gray-400">→</span>
+        <div class="rounded-lg bg-blue-50 px-3 py-2 font-medium text-blue-700 dark:bg-blue-950/30 dark:text-blue-400">Meta Ads</div>
+        <span class="text-gray-400">→</span>
+        <div class="rounded-lg bg-purple-50 px-3 py-2 font-medium text-purple-700 dark:bg-purple-950/30 dark:text-purple-400">Make.com</div>
+        <span class="text-gray-400">→</span>
+        <div class="rounded-lg bg-purple-50 px-3 py-2 font-medium text-purple-700 dark:bg-purple-950/30 dark:text-purple-400">BigQuery</div>
+        <span class="text-gray-400">→</span>
+        <div class="rounded-lg bg-accent-50 px-3 py-2 font-medium text-accent-700 dark:bg-accent-950/30 dark:text-accent-400">Looker Studio</div>
+        <span class="text-gray-400">→</span>
+        <div class="rounded-lg bg-green-50 px-3 py-2 font-medium text-green-700 dark:bg-green-950/30 dark:text-green-400">AI Analysis</div>
+        <span class="text-gray-400">→</span>
+        <div class="rounded-lg bg-amber-50 px-3 py-2 font-medium text-amber-700 dark:bg-amber-950/30 dark:text-amber-400">Email Report</div>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center text-xs text-gray-400">
+      <p>This is a live demo visualization of the automated marketing dashboard described in the tutorial above.</p>
+      <p class="mt-1">All data shown is simulated for demonstration purposes.</p>
+    </div>
+  </div>
+</BaseLayout>

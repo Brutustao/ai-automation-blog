@@ -10,6 +10,8 @@ Marketing teams waste an average of 12 hours per week pulling reports manually.
 An automated dashboard solves this — and adding AI turns it from a data
 visualization into a decision engine. Here is how to build one end-to-end.
 
+> **Live demo:** See a working example of what you will build at our [Automated Marketing Dashboard Demo](/dashboard/).
+
 ## What You Will Build
 
 A centralized marketing dashboard that:
