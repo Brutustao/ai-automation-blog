@@ -7,7 +7,6 @@ import JsonLd from "../../components/JsonLd.astro";
 import Breadcrumb from "../../components/Breadcrumb.astro";
 import TableOfContents from "../../components/TableOfContents.astro";
 import ShareButtons from "../../components/ShareButtons.astro";
-import NewsletterSignup from "../../components/NewsletterSignup.astro";
 
 export async function getStaticPaths() {
   const articles = await getCollection("articles");
@@ -116,8 +115,6 @@ const blogPostingSchema = {
       <Content />
 
       <ShareButtons title={article.data.title} />
-
-      <NewsletterSignup />
     </article>
 
     <!-- Sidebar: TOC (desktop) -->

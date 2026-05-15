@@ -8,6 +8,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "generate-post": "node scripts/generate-post.mjs",
+    "generate-og-png": "node scripts/generate-og-png.mjs",
     "auto-publish": "node scripts/auto-publish.mjs",
     "seo-check": "node scripts/seo-check.mjs",
     "submit-sitemap": "node scripts/submit-sitemap.mjs"

@@ -2,6 +2,7 @@
 import { SITE } from "../config";
 import CanonicalURL from "../components/CanonicalURL.astro";
 import JsonLd from "../components/JsonLd.astro";
+import CookieConsent from "../components/CookieConsent.astro";
 
 export interface Props {
   title?: string;
@@ -16,7 +17,11 @@ const ogImage = image
   ? image.startsWith("http")
     ? image
     : SITE.url + image
-  : SITE.url + "/og-default.svg";
+  : SITE.url + "/og-default.png";
+
+// Social media crawlers poorly support SVG; use PNG fallback
+const ogImageType = image && image.endsWith(".svg") ? "image/png" : undefined;
+const socialImage = image && image.endsWith(".svg") ? SITE.url + "/og-default.png" : ogImage;
 
 const websiteSchema = {
   "@context": "https://schema.org",
@@ -46,10 +51,11 @@ const websiteSchema = {
     <meta property="og:type" content="website" />
     <meta property="og:url" content={SITE.url + Astro.url.pathname} />
     <meta property="og:site_name" content={SITE.title} />
-    <meta property="og:image" content={ogImage} />
+    <meta property="og:image" content={socialImage} />
+    {ogImageType && <meta property="og:image:type" content={ogImageType} />}
     {date && <meta property="article:published_time" content={date} />}
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image" content={socialImage} />
     <meta name="color-scheme" content="dark light" />
     <meta name="google-site-verification" content="xzfcMu9AOoktm62uxY3NWotAhZfI4P-KqG4dWQO8oGw" />
     <title>{title ? `${title} — ${SITE.title}` : SITE.title}</title>
@@ -167,6 +173,7 @@ const websiteSchema = {
               <li><a href="/" class="transition hover:text-gray-900 dark:hover:text-gray-100">Home</a></li>
               <li><a href="/search" class="transition hover:text-gray-900 dark:hover:text-gray-100">Search</a></li>
               <li><a href="/about" class="transition hover:text-gray-900 dark:hover:text-gray-100">About</a></li>
+              <li><a href="/privacy" class="transition hover:text-gray-900 dark:hover:text-gray-100">Privacy Policy</a></li>
               <li><a href="/rss.xml" class="transition hover:text-gray-900 dark:hover:text-gray-100">RSS Feed</a></li>
             </ul>
           </div>
@@ -176,6 +183,8 @@ const websiteSchema = {
         </div>
       </div>
     </footer>
+
+    <CookieConsent />
 
     <script>
       const btn = document.getElementById("theme-toggle");
