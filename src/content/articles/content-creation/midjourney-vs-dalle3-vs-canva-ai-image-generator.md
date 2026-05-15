@@ -4,6 +4,7 @@ description: Compare three leading AI image generation tools on image quality, e
 date: 2025-06-28
 category: content-creation
 affiliate: true
+image: "/images/articles/midjourney-vs-dalle3-vs-canva-ai-image-generator.svg"
 ---
 
 AI image generation has become an essential part of the marketing stack. Blog

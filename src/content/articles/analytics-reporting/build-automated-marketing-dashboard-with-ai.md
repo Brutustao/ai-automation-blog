@@ -4,6 +4,7 @@ description: Step-by-step guide to creating a real-time marketing dashboard that
 date: 2025-06-19
 category: analytics-reporting
 affiliate: true
+image: "/images/articles/build-automated-marketing-dashboard-with-ai.svg"
 ---
 
 Marketing teams waste an average of 12 hours per week pulling reports manually.

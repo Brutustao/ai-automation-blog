@@ -4,6 +4,7 @@ description: Learn how to build automated abandoned cart recovery sequences usin
 date: 2025-06-16
 category: email-marketing-ai
 affiliate: true
+image: "/images/articles/ai-powered-abandoned-cart-email-sequences.svg"
 ---
 
 ## Why Abandoned Cart Emails Work

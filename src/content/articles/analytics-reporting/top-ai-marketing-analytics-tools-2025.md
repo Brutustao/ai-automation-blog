@@ -4,6 +4,7 @@ description: Discover the best AI-powered analytics platforms that help marketer
 date: 2025-06-24
 category: analytics-reporting
 affiliate: true
+image: "/images/articles/top-ai-marketing-analytics-tools-2025.svg"
 ---
 
 The analytics tool landscape has shifted dramatically in the last two years.

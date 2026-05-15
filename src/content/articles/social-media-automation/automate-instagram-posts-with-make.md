@@ -4,6 +4,7 @@ description: Step-by-step tutorial on scheduling and auto-posting Instagram cont
 date: 2026-05-12
 category: social-media-automation
 affiliate: true
+image: "/images/articles/automate-instagram-posts-with-make.svg"
 ---
 
 ## Why Automate Instagram?

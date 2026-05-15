@@ -4,6 +4,7 @@ description: In-depth comparison of three major analytics platforms focusing on 
 date: 2025-06-29
 category: analytics-reporting
 affiliate: true
+image: "/images/articles/google-analytics-4-vs-mixpanel-vs-amplitude.svg"
 ---
 
 Google Analytics 4, Mixpanel, and Amplitude each claim to be the smartest
